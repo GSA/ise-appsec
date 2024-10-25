@@ -27,7 +27,7 @@ jobs:
         env:
           FOD_API_TOKEN: ${{ secrets.FOD_API_TOKEN }}
         run: |
-          # Step 1: Create a new user in Fortify on Demand
+          # Step 1 & 2 : Create a new user in Fortify on Demand and Assign Role
           curl -X POST https://api.fed.fortify.com/api/v3/users \
           -H "Authorization: Bearer $FOD_API_TOKEN" \
           -H "Content-Type: application/json" \
@@ -36,33 +36,6 @@ jobs:
             "email": "${{ github.event.inputs.email }}",
             "firstName": "fName",
             "lastName": "lName",
-            "roleIds": [],
-            "groups": []
+            "roleIds": ${{ github.event.inputs.role }}
           }'
 
-          # Step 2: Assign a role to the user
-          curl -X POST https://api.fed.fortify.com/api/v3/users/roles \
-          -H "Authorization: Bearer $FOD_API_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "userName": "${{ github.event.inputs.username }}",
-            "roleId": ${{ github.event.inputs.role }}
-          }'
-
-          # Step 3: Add the user to a group
-          curl -X POST https://api.fed.fortify.com/api/v3/users/groups \
-          -H "Authorization: Bearer $FOD_API_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "userName": "${{ github.event.inputs.username }}",
-            "groupId": ${{ github.event.inputs.group }}
-          }'
-
-          # Step 4: Assign the user to an application
-          curl -X POST https://api.fed.fortify.com/api/v3/applications/assign \
-          -H "Authorization: Bearer $FOD_API_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "applicationName": "${{ github.event.inputs.app_name }}",
-            "userName": "${{ github.event.inputs.username }}"
-          }'
