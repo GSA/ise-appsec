@@ -1,0 +1,68 @@
+name: Provision User in Fortify on Demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'Username to provision'
+        required: true
+      email:
+        description: 'Email of the user'
+        required: true
+      role:
+        description: 'Role to assign to the user'
+        required: true
+      group:
+        description: 'Group to add the user to'
+        required: true
+      app_name:
+        description: 'Application to assign to the user'
+        required: true
+
+jobs:
+  provision-user:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Provision User in Fortify on Demand
+        env:
+          FOD_API_TOKEN: ${{ secrets.FOD_API_TOKEN }}
+        run: |
+          # Step 1: Create a new user in Fortify on Demand
+          curl -X POST https://api.ams.fortify.com/api/v3/users \
+          -H "Authorization: Bearer $FOD_API_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "userName": "${{ github.event.inputs.username }}",
+            "email": "${{ github.event.inputs.email }}",
+            "firstName": "John",
+            "lastName": "Doe",
+            "roleIds": [],
+            "groups": []
+          }'
+
+          # Step 2: Assign a role to the user
+          curl -X POST https://api.ams.fortify.com/api/v3/users/roles \
+          -H "Authorization: Bearer $FOD_API_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "userName": "${{ github.event.inputs.username }}",
+            "roleId": ${{ github.event.inputs.role }}
+          }'
+
+          # Step 3: Add the user to a group
+          curl -X POST https://api.ams.fortify.com/api/v3/users/groups \
+          -H "Authorization: Bearer $FOD_API_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "userName": "${{ github.event.inputs.username }}",
+            "groupId": ${{ github.event.inputs.group }}
+          }'
+
+          # Step 4: Assign the user to an application
+          curl -X POST https://api.ams.fortify.com/api/v3/applications/assign \
+          -H "Authorization: Bearer $FOD_API_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "applicationName": "${{ github.event.inputs.app_name }}",
+            "userName": "${{ github.event.inputs.username }}"
+          }'
