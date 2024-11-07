@@ -33,8 +33,8 @@ jobs:
           -d '{
             "userName": "${{ github.event.inputs.username }}",
             "email": "${{ github.event.inputs.email }}",
-            "firstName": "{{ github.event.inputs.fName }",
-            "lastName": "{{ github.event.inputs.lName }",
+            "firstName": "${{ github.event.inputs.fName }",
+            "lastName": "${{ github.event.inputs.lName }",
             "roleIds": ${{ github.event.inputs.role }}
           }'
 
