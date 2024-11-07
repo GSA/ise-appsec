@@ -27,7 +27,7 @@ jobs:
           FOD_API_TOKEN: ${{ secrets.FOD_API_TOKEN }}
         run: |
           # Step 1 & 2 : Create a new user in Fortify on Demand and Assign Role
-          curl -X POST https://api.fed.fortify.com/api/v3/users \
+          curl -X POST https://api.fed.fortifygov.com/api/v3/users \
           -H "Authorization: Bearer $FOD_API_TOKEN" \
           -H "Content-Type: application/json" \
           -d '{
