@@ -33,5 +33,5 @@ jobs:
                 "email": "newuser@test.com",
                 "firstName": "New",
                 "lastName": "User",
-                "roleIds": [1128]
+                "roleIds": 1128
               }'
