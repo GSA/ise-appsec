@@ -6,6 +6,12 @@ on:
       username:
         description: 'Username to provision'
         required: true
+      fName:
+        description: 'User First Name'
+        required: true
+      lName:
+        description: 'User Last Name'
+        required: true
       email:
         description: 'Email of the user'
         required: true
@@ -34,8 +40,8 @@ jobs:
           -d '{
             "userName": "${{ github.event.inputs.username }}",
             "email": "${{ github.event.inputs.email }}",
-            "firstName": "fName",
-            "lastName": "lName",
+            "firstName": "{{ github.event.inputs.fName }",
+            "lastName": "{{ github.event.inputs.lName }",
             "roleIds": ${{ github.event.inputs.role }}
           }'
 
