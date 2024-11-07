@@ -24,6 +24,10 @@ jobs:
           unzip Fortify_ScanCentral_Client_Latest_x64.zip -d scancentral-client
           export PATH=$PATH:$(pwd)/scancentral-client/bin
           echo $PATH
+
+      - name: Make ScanCentral Executable
+        run: |
+          chmod +x  /home/runner/work/ise-appsec/ise-appsec/scancentral-client/bin/scancentral  # Update permissions to make the binary executable
           
       
       - name: Run ScanCentral Command
