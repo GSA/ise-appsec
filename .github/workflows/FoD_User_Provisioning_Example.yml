@@ -6,25 +6,18 @@ on:
       username:
         description: 'Username to provision'
         required: true
+      email:
+        description: 'Email of the user'
+        required: true
       fName:
         description: 'User First Name'
         required: true
       lName:
         description: 'User Last Name'
         required: true
-      email:
-        description: 'Email of the user'
-        required: true
       role:
         description: 'Role to assign to the user'
         required: true
-      group:
-        description: 'Group to add the user to'
-        required: true
-      app_name:
-        description: 'Application to assign to the user'
-        required: true
-
 jobs:
   provision-user:
     runs-on: ubuntu-latest
