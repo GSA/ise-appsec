@@ -17,6 +17,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Install ScanCentral Client
+        run: |
+          # Download the ScanCentral Client
+          wget https://fed.fortifygov.com/Tools/ScanCentral/Fortify_ScanCentral_Client_Latest_x64.zip -O Fortify_ScanCentral_Client_Latest_x64.zip
+          unzip Fortify_ScanCentral_Client_Latest_x64.zip -d scancentral-client
+          export PATH=$PATH:$(pwd)/scancentral-client/bin
+          
+      
       - name: Run ScanCentral Command
         run: |
           # Use the pre-installed ScanCentral Client to package the source code
