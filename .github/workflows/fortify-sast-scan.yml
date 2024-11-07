@@ -8,6 +8,10 @@ on:
     branches:
       - main
   workflow_dispatch:  # Allows manual triggering of the workflow
+    inputs:
+      releaseId:
+        description: 'Release ID'
+        required: true
 
 jobs:
   fortify-scan:
@@ -50,7 +54,7 @@ jobs:
 
       - name: Upload .zip File for Scanning
         run: |
-          curl -X POST "https://api.fed.fortifygov.com/api/v3/releases/{releaseId}/scan-uploads" \
+          curl -X POST "https://api.fed.fortifygov.com/api/v3/releases/${{ github.event.inputs.releaseId }}/scan-uploads" \
             -H "Authorization: Bearer ${{ env.access_token }}" \
             -H "FOD-Tenant: ${{ secrets.FOD_TENANT_ID }}" \
             -H "Content-Type: multipart/form-data" \
