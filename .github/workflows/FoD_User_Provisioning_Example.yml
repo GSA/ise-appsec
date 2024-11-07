@@ -2,18 +2,19 @@ name: Provision User in Fortify on Demand
 
 on:
   workflow_dispatch:
-    
+
 jobs:
   provision-user:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Provision User in Fortify on Demand
-        env:
-          FOD_API_TOKEN: ${{ secrets.FOD_API_TOKEN }}
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Get Access Token
         id: get-token
         run: |
-          response=$(curl -s -X POST "https://api.fed.fortify.com/oauth/token" \
+          response=$(curl -s -X POST "https://api.fed.fortifygov.com/oauth/token" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d "client_id=${{ secrets.FOD_CLIENT_ID }}" \
             -d "client_secret=${{ secrets.FOD_CLIENT_SECRET }}" \
@@ -22,7 +23,7 @@ jobs:
 
       - name: Create User in Fortify On-Demand
         run: |
-          curl -X POST https://api.fed.fortify.com/api/v3/users \
+          curl -X POST https://api.fed.fortifygov.com/api/v3/users \
           -H "Authorization: Bearer ${{ env.access_token }}" \
           -H "Content-Type: application/json" \
           -d '{
