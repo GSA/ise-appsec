@@ -16,6 +16,7 @@ jobs:
         run: |
           response=$(curl -s -X POST "https://api.fed.fortifygov.com/oauth/token" \
             -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "scope=api-tenant" \
             -d "client_id=${{ secrets.FOD_CLIENT_ID }}" \
             -d "client_secret=${{ secrets.FOD_CLIENT_SECRET }}" \
             -d "grant_type=client_credentials")
