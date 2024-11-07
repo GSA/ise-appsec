@@ -21,6 +21,7 @@ jobs:
             -d "client_secret=${{ secrets.FOD_CLIENT_SECRET }}" \
             -d "grant_type=client_credentials")
           echo "access_token=$(echo $response | jq -r '.access_token')" >> $GITHUB_ENV
+          echo "access_token=$(echo $response | jq -r '.access_token')"
 
       - name: Create User in Fortify On-Demand
         run: |
