@@ -33,7 +33,7 @@ jobs:
       - name: Run ScanCentral Command
         run: |
           # Use the pre-installed ScanCentral Client to package the source code
-          /home/runner/work/ise-appsec/ise-appsec/scancentral-client/bin/scancentral package -bt none -b none -o "mycode.zip"
+          /home/runner/work/ise-appsec/ise-appsec/scancentral-client/bin/scancentral package -bt none -o "mycode.zip"
           # -bt: Build tool (e.g., mvn, gradle, npm)
           # -b: Build command to compile your project
           # -o: Output file for the packaged source code
