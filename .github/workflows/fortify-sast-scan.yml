@@ -20,8 +20,8 @@ jobs:
       - name: Install ScanCentral Client
         run: |
           # Download the ScanCentral Client
-          wget https://fed.fortifygov.com/Tools/ScanCentral/Fortify_ScanCentral_Client_Latest_x64.zip -O Fortify_ScanCentral_Client_Latest_x64
-          unzip Fortify_ScanCentral_Client_Latest_x64.zip -d scancentral-client
+          wget https://fed.fortifygov.com/Tools/ScanCentral/Fortify_ScanCentral_Client_Latest_x64 -O Fortify_ScanCentral_Client_Latest_x64
+          unzip Fortify_ScanCentral_Client_Latest_x64 -d scancentral-client
           export PATH=$PATH:$(pwd)/scancentral-client/bin
           
       
