@@ -43,7 +43,7 @@ jobs:
 
       - name: Start Scan
         run: |
-          curl -X POST "https://api.fed.fortifygov.com/api/v3/releases/${{ github.event.inputs.releaseId }}/scans" \
+          curl -X POST "https://api.fed.fortifygov.com/api/v3/releases/${{ github.event.inputs.releaseId }}/static-scans/start-scan" \
             -H "Authorization: Bearer ${{ env.access_token }}" \
             -H "Content-Type: application/json" \
             -d '{
