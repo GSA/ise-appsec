@@ -21,10 +21,10 @@ jobs:
           java-version: 1.8
           
       - name: Setup Fortify ScanCentral Client
-        uses: fortify-actions/setup-scancentral-client@v1
+        uses: fortify/setup-scancentral-client@v1
         
       - name: Setup Fortify on Demand Uploader
-        uses: fortify-actions/setup-fod-uploader@v1    
+        uses: fortify/setup-fod-uploader@v1    
         
       - name: Run ScanCentral Command
         run: scancentral-client/bin/scancentral package -bt none -o mycode.zip
