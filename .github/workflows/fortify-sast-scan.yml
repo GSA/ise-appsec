@@ -3,12 +3,8 @@ name: Fortify On-Demand Scan
 on:
   workflow_dispatch:  # Allows manual triggering of the workflow
     inputs:
-      applicationName:
-        description: 'App Name'
-        required: true
-      
-      releaseName:
-        description: 'Release Name'
+        releaseId:
+        description: 'ReleaseID'
         required: true
 
 jobs:
@@ -30,7 +26,7 @@ jobs:
           FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
           FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
           # FOD_LOGIN_EXTRA_OPTS: --socket-timeout=60s
-          FOD_RELEASE: ${{ github.event.inputs.applicationName }}:${{ github.event.inputs.releaseName }}
+          FOD_RELEASE: ${{ github.event.inputs.releaseId }}
           # DO_SETUP: true
           # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml
           # SETUP_EXTRA_OPTS: --on-unsigned=ignore
