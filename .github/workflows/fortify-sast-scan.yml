@@ -35,7 +35,7 @@ jobs:
         run: |
           curl -X POST "https://api.fed.fortifygov.com/api/v3/releases/${{ github.event.inputs.releaseId }}/scan-uploads" \
             -H "Authorization: Bearer ${{ env.access_token }}" \
-            -H "FOD-Tenant: ${{ secrets.FOD_TENANT_ID }}" \
+            -H "FOD-Tenant: ${{ secrets.FOD_TENANT }}" \
             -H "Content-Type: multipart/form-data" \
             -F "file=@package.zip" \
             -F "scanSettingsId={scanSettingsId}" \
