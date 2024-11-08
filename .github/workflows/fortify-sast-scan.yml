@@ -3,46 +3,51 @@ name: Fortify On-Demand Scan
 on:
   workflow_dispatch:  # Allows manual triggering of the workflow
     inputs:
-        releaseId:
-          description: 'ReleaseID'
-          required: true
+      releaseId:
+        description: 'Release ID'
+        required: true
 
 jobs:
   fortify-scan:
     runs-on: ubuntu-latest
 
     steps:
-              
-      - name: Check out source code
-        uses: actions/checkout@v4  
+      - name: Checkout Code
+        uses: actions/checkout@v4
         
-      - name: Run FoD SAST Scan
-        uses: fortify/github-action/fod-sast-scan@v1
+      - name: Package source code
+        uses: fortify/github-action/package@v1
         env:
-          FOD_URL: https://fed.fortifygov.com
-          FOD_TENANT: ${{secrets.FOD_TENANT}}
-          # FOD_USER: ${{secrets.FOD_USER}}
-          # FOD_PASSWORD: ${{secrets.FOD_PAT}}
-          FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
-          FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
-          # FOD_LOGIN_EXTRA_OPTS: --socket-timeout=60s
-          FOD_RELEASE: ${{ github.event.inputs.releaseId }}
-          # DO_SETUP: true
-          # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml
-          # SETUP_EXTRA_OPTS: --on-unsigned=ignore
-          PACKAGE_EXTRA_OPTS: -oss -bt none
-          # FOD_SAST_SCAN_EXTRA_OPTS:
-          # DO_DEBRICKED_SCAN: true
-          # DO_POLICY_CHECK: true
-          # POLICY_CHECK_ACTION: https://scm.my.org/shared-repos/fcli-actions/check-policy.yaml
-          # POLICY_CHECK_EXTRA_OPTS: --on-unsigned=ignore
-          # DO_JOB_SUMMARY: true
-          # JOB_SUMMARY_ACTION: https://scm.my.org/shared-repos/fcli-actions/job-summary.yaml
-          # JOB_SUMMARY_EXTRA_OPTS: --on-unsigned=ignore
-          # DO_PR_COMMENT: true
-          # PR_COMMENT_ACTION: https://scm.my.org/shared-repos/fcli-actions/github-pr-comment.yaml
-          # PR_COMMENT_EXTRA_OPTS: --on-unsigned=ignore
-          # DO_EXPORT: true
-          # EXPORT_ACTION: https://scm.my.org/shared-repos/fcli-actions/github-sast-report.yaml
-          # EXPORT_EXTRA_OPTS: --on-unsigned=ignore
+          PACKAGE_EXTRA_OPTS: -oss -bt none 
           # TOOL_DEFINITIONS: https://ftfy.mycompany.com/tool-definitions/v1/tool-definitions.yaml.zip
+
+      - name: Get Access Token
+        id: get-token
+        run: |
+          response=$(curl -s -X POST "https://api.fed.fortifygov.com/oauth/token" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "client_id=${{ secrets.FOD_CLIENT_ID }}" \
+            -d "client_secret=${{ secrets.FOD_CLIENT_SECRET }}" \
+            -d "grant_type=client_credentials")
+          echo "access_token=$(echo $response | jq -r '.access_token')" >> $GITHUB_ENV
+
+      - name: Upload .zip File for Scanning
+        run: |
+          curl -X POST "https://api.fed.fortifygov.com/api/v3/releases/${{ github.event.inputs.releaseId }}/scan-uploads" \
+            -H "Authorization: Bearer ${{ env.access_token }}" \
+            -H "FOD-Tenant: ${{ secrets.FOD_TENANT_ID }}" \
+            -H "Content-Type: multipart/form-data" \
+            -F "file=@package.zip" \
+            -F "scanSettingsId={scanSettingsId}" \
+            -F "isBundledAssessment=false"
+
+      - name: Start Scan
+        run: |
+          curl -X POST "https://api.fed.fortifygov.com/api/v3/releases/${{ github.event.inputs.releaseId }}/static-scans/start-scan" \
+            -H "Authorization: Bearer ${{ env.access_token }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+                  "scanType": "Static",
+                  "entitlementPreferenceType": "SingleScan",
+                  "scanSettingsId": {scanSettingsId}
+                }'
