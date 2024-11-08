@@ -4,8 +4,8 @@ on:
   workflow_dispatch:  # Allows manual triggering of the workflow
     inputs:
         releaseId:
-        description: 'ReleaseID'
-        required: true
+          description: 'ReleaseID'
+          required: true
 
 jobs:
   fortify-scan:
