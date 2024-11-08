@@ -14,24 +14,20 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      - name: Install ScanCentral Client
-        run: |
-          # Use the correct URL from a cloud storage service like AWS S3
-          wget -O Fortify_ScanCentral_Client_Latest_x64.zip "https://fod-tools.s3.us-east-1.amazonaws.com/Fortify_ScanCentral_Client_Latest_x64.zip?response-content-disposition=inline&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDMczlDfoEkLY7DNhtm1mpYHecru%2BbnuyzJZ1gBmYAYpQIhAPVJubhu35vH9fKBN851%2FZOnm7O7NRnd8yG6xYe6MR11KuUDCE8QBRoMNjI3NTY2ODk0Mzk5IgwsVOzPFqLq1EK1Wm0qwgN%2BDIrICqtqj6IF4Nwkrb0gdIRR0HKIhpHLfLI9YMRqLVpE3DNqZZicSkuAEueWnJv%2F2zQY7cziOOpuwg0m6wRt4XySBd6w3Q9dathUqOhvEJ9H8d%2BvmylLsW7DPbVGZSfa7BUb4yMfkQwu97JEa36o3DXxP0S1%2BLKx9erFsCvnMusC%2FFsoXqkxi4jDCTOcBc4KM%2BmF%2FrxxPVvy0Q2LrWYr1CApPmXmn%2BqVCHT23y1bAMj2H4RaXkzMIzZdcBeFuZ4KojYWhzuYzIteqFBGiuALs2NToJlHoNB3NDQp8xxbE6CkUQOflrMtYNP5VzFd2g0agGZDU%2FagYCDlpyg2FL0CLk4mXHom1Mt%2FT6oQOWv8VJ%2BTb5TeqsS785KrZUMAixAqQIxBucvwCci3fba0TovHp051b6buHG9m%2FQeTDtbAs2RKvHVK07PPuSXFRGTxESE7I7pjPnk7PdbsKxYr1E1DJo%2FMV4JF067YRM9XaZmpMNarwEkbpy2LzfB3HC88eEQCUXfe%2FqyCJygILO2xpSimCy1BA9pvIKkFCXXEfd0u%2BZPKMKlY%2Fm1AXlmHFEblhiqWpCaGM8VjrXet8oQkPZPaCnIwy8i0uQY6uwL2n5AHYTULCEeiavbBLiDiECSssacWu19IFVtJ%2BokKBvM7lnJ1RHIhYwTDdQ4J3IekQNWAV%2B%2BVraChryxqE2VnJifN5G%2BxTAByRwUF63chS9D11rqavAmGuCnJMauLXDa6ZbrRy60DBDY8Oz%2Bc9nhcYP%2B8enf3z1yk5C1VcTYCn3uP8NgWpnrHOBIsag91P43jD4EqP4bd%2FJV7oFWAtLiIcSGMwrpTl0sRF%2F94AgVcVtQklNM5o630qxvQlRxWdbLn6Tiwn1Y6igAg%2B2I%2FEg%2FIBovqwdpFBP0bOrFN6bgFGQQseKDI%2BUBq1s2sGBRd8l24RSOOIlSwTffS%2FjH3q9vVj%2FHm1NV7CpYWFC7sx0ywUOvfDcOB1AUSYvW880%2FWTMouBiIzJ5exoWgxDYCJFrj%2BjnuOZWBy8F9NnU0%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAZEHPG3U75ICDSVC3%2F20241107%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241107T212459Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=3830265c566c1cba58968b4073195dec110ebb6aef9be781222404cadae002fc"
-          unzip Fortify_ScanCentral_Client_Latest_x64.zip -d scancentral-client
-          export PATH=$PATH:$(pwd)/scancentral-client/bin
-          echo $PATH
-
-      - name: Make ScanCentral Executable
-        run: |
-          chmod +x  /home/runner/work/ise-appsec/ise-appsec/scancentral-client/bin/scancentral  # Update permissions to make the binary executable
+        
+      - name: Setup Java
+        uses: actions/setup-java@v1     # Required for ScanCentral Client and FoD Uploader
+        with:
+          java-version: 1.8
           
-      
+      - name: Setup Fortify ScanCentral Client
+        uses: fortify-actions/setup-scancentral-client@v1
+        
+      - name: Setup Fortify on Demand Uploader
+        uses: fortify-actions/setup-fod-uploader@v1    
+        
       - name: Run ScanCentral Command
-        run: |
-          # Use the pre-installed ScanCentral Client to package the source code
-          /home/runner/work/ise-appsec/ise-appsec/scancentral-client/bin/scancentral package -bt none -o "mycode.zip"
+        run: scancentral-client/bin/scancentral package -bt none -o mycode.zip
           # -bt: Build tool (e.g., mvn, gradle, npm)
           # -b: Build command to compile your project
           # -o: Output file for the packaged source code
