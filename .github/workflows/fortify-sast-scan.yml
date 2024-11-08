@@ -41,6 +41,12 @@ jobs:
             -F "scanSettingsId={scanSettingsId}" \
             -F "isBundledAssessment=false"
 
+          # Capture the return code of the curl command
+            return_code=$?
+
+          # Display the response and the return code
+            echo "Return Code: $return_code"
+
       - name: Start Scan
         run: |
           curl -X POST "https://api.fed.fortifygov.com/api/v3/releases/${{ github.event.inputs.releaseId }}/static-scans/start-scan" \
