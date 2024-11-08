@@ -46,6 +46,11 @@ jobs:
 
           # Display the response and the return code
             echo "Return Code: $return_code"
+            
+      - name: List Directory Contents
+        run: |
+         echo "Listing directory contents:"
+         ls -l  # List all files in the current directory with detailed information
 
       - name: Start Scan
         run: |
