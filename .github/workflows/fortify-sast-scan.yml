@@ -13,24 +13,13 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         
-      - name: Setup Java
-        uses: actions/setup-java@v1     # Required for ScanCentral Client and FoD Uploader
-        with:
-          java-version: 1.8
-          
-      - name: Setup Fortify ScanCentral Client
-        uses: fortify/setup-scancentral-client@v1
-        
-      - name: Setup Fortify on Demand Uploader
-        uses: fortify/setup-fod-uploader@v1    
-        
-      - name: Run ScanCentral Command
-        run: scancentral-client/bin/scancentral package -bt none -o mycode.zip
-          # -bt: Build tool (e.g., mvn, gradle, npm)
-          # -b: Build command to compile your project
-          # -o: Output file for the packaged source code
+      - name: Package source code
+        uses: fortify/github-action/package@v1
+        env:
+          PACKAGE_EXTRA_OPTS: -oss -bt none -o mycode.zip
+          # TOOL_DEFINITIONS: https://ftfy.mycompany.com/tool-definitions/v1/tool-definitions.yaml.zip
 
       - name: Get Access Token
         id: get-token
