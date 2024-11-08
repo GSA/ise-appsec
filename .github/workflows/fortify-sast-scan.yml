@@ -18,7 +18,7 @@ jobs:
       - name: Package source code
         uses: fortify/github-action/package@v1
         env:
-          PACKAGE_EXTRA_OPTS: -oss -bt none -o "mycode.zip"
+          PACKAGE_EXTRA_OPTS: -oss -bt none 
           # TOOL_DEFINITIONS: https://ftfy.mycompany.com/tool-definitions/v1/tool-definitions.yaml.zip
 
       - name: Get Access Token
@@ -37,7 +37,7 @@ jobs:
             -H "Authorization: Bearer ${{ env.access_token }}" \
             -H "FOD-Tenant: ${{ secrets.FOD_TENANT_ID }}" \
             -H "Content-Type: multipart/form-data" \
-            -F "file=@mycode.zip" \
+            -F "file=@package.zip" \
             -F "scanSettingsId={scanSettingsId}" \
             -F "isBundledAssessment=false"
 
