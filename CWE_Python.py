@@ -5,14 +5,18 @@ import sqlite3
 import xml.etree.ElementTree as ET
 import pickle
 import random
+from flask import Flask, request, make_response
 
 # CWE-787: Out-of-Bounds Write
 def cwe_787_example():
-    arr = [1, 2, 3]
+    # Using ctypes to create a buffer and attempt an out-of-bounds write
+    buffer = (ctypes.c_char * 10)()  # A buffer of 10 bytes
     try:
-        arr[5] = 10  # Out-of-bounds write
-    except IndexError as e:
-        print("CWE-787: Out-of-bounds write caught:", e)
+        # Attempt to write beyond the buffer's allocated size (Out-of-Bounds Write)
+        ctypes.memset(ctypes.addressof(buffer) + 15, ord('A'), 1)  # Writing 5 bytes out-of-bounds
+        print("CWE-787: Attempted out-of-bounds write")
+    except Exception avs e:
+        print("CWE-787: Error caught during out-of-bounds write attempt:", e)
 
 # CWE-89: SQL Injection
 def cwe_89_example(user_input):
@@ -51,9 +55,31 @@ def cwe_125_example():
     except IndexError as e:
         print("CWE-125: Out-of-bounds read caught:", e)
 
-# CWE-79: Cross-Site Scripting (XSS)
-def cwe_79_example(user_input):
-    print(f"CWE-79: Vulnerable HTML: <div>{user_input}</div>")  # Vulnerable to XSS
+# Updated:  CWE-79: Cross-Site Scripting (XSS)
+app = Flask(__name__)
+
+# Simulated login endpoint to set a session cookie
+@app.route("/login", methods=["GET"])
+def login():
+    response = make_response("User logged in. Session cookie set.")
+    # Setting a session cookie
+    response.set_cookie("session_id", "12345")
+    return response
+
+# Simulated CSRF-vulnerable endpoint
+@app.route("/transfer", methods=["POST"])
+def transfer():
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        return "Unauthorized: No session cookie found.", 401
+
+    amount = request.form.get("amount")
+    recipient = request.form.get("recipient")
+    # No CSRF token or protection mechanism
+    return f"Transferred {amount} to {recipient} using session {session_id}"
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # CWE-416: Use After Free (simulated)
 def cwe_416_example():
