@@ -63,9 +63,6 @@ jobs:
           FOD_USER: ${{secrets.FOD_USER}}
           FOD_PASSWORD: ${{secrets.FOD_PAT}}
           DO_SETUP: true
-          SETUP_EXTRA_OPTS: --assessment-type "Static+"  # audit pref is set to automated by default, cannot override
-          EXPORT_ACTION: https://raw.githubusercontent.com/fortify/fcli/refs/heads/feat-github-report/fcli-core/fcli-fod/src/main/resources/com/fortify/cli/fod/actions/zip/github-sast-report.yaml
-          EXPORT_EXTRA_OPTS: --on-unsigned=ignore --on-invalid-version=ignore
           # DO_PACKAGE_DEBUG: true 
           ### Optional configuration when integrating with Fortify on Demand
           # EXTRA_PACKAGE_OPTS: -oss                       # Extra 'scancentral package' options, like '-oss'' if
