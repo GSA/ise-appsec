@@ -1,0 +1,11 @@
+1) TEST1: Auto application Creation
+  Not a major requirement for us, the appname should already be established
+  For the DO_SETUP option to create a new release based on branch, the repo name must match the application name in FoD but there are restrictions on Github repo names (no spaces, special      characters etc). So our current hybrid app "GSA\ise-appsec" is not allowed.
+  I will with try to set the repo name and allow releases to be created with DO_SETUP and SETUP_ACTION
+
+2) TEST2: Auto Release Creation
+  Need to see if we can auto create releases while having the app name static in the settings. This is the likely scenario since apps will already be named.
+
+
+3) TEST3: Dependency Build
+  Check the log to see if the requirements.txt is being used to generated deps. Also check the manifest in FoD for the same.
