@@ -28,6 +28,6 @@ on:
 
 jobs:
   Py-Fortify-AST-Scan:
-    uses: ise-appsec/.github/workflows/fortify.yml@main
+    uses: GSA/ise-appsec/.github/workflows/fortify.yml@main
     
    
