@@ -13,7 +13,7 @@
 # documentation. If you need additional assistance, please contact Fortify support.                                                            #
 ################################################################################################################################################
 
-name: Py Fortify AST Scan
+name: Py GSA Fortify Scan
 
 # Customize trigger events based on your DevSecOps process and/or policy
 on:
@@ -27,7 +27,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  Py-Fortify-AST-Scan:
-    uses: GSA/ise-appsec/.github/workflows/gh-fortify.yml@PyTest1
-    
-   
+  Fortify-AST-Scan:
+    uses: GSA/ise-appsec-sast/.github/workflows/gh-fortify.yml@main
+    secrets:
+      FOD_USER: ${{ secrets.FOD_USER }}
+      FOD_TENANT: ${{ secrets.FOD_TENANT }}
+      FOD_PAT: ${{ secrets.FOD_PAT }}
