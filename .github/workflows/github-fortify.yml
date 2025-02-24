@@ -34,6 +34,10 @@ on:
          required: true
        FOD_PAT:
          required: true
+       HTTP_PROXY:
+        required: false
+       HTTPS_PROXY:
+        required: false
 
 jobs:
   Fortify-AST-Scan:
@@ -55,6 +59,13 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
+
+      # Check for Proxy params to set as environment vars
+      - name: Set Proxy Support (optional)
+        if: ${{secrets.HTTP_PROXY}} || ${{secrets.HTTPS_PROXY}}
+        env:
+          http_proxy: "http://testproxy.com:2031"
+        run: env
 
       # Perform SAST and optionally SCA scan via Fortify on Demand/Fortify Hosted/Software Security Center, then
       # optionally export SAST results to the GitHub code scanning dashboard. In case further customization is
