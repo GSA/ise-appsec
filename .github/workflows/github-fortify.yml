@@ -109,5 +109,3 @@ jobs:
           # DO_WAIT: true                                  # Wait for scan completion, implied if 'DO_EXPORT: true'
           # DO_EXPORT: true                                # Export SAST results to GitHub code scanning dashboard
       
-      - name: Show Environment Vars
-        run: env
