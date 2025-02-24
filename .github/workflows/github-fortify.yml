@@ -62,7 +62,7 @@ jobs:
 
       # Check for Proxy params to set as environment vars
       - name: Set Proxy Support (optional)
-        if: ${{secrets.HTTP_PROXY}} || ${{secrets.HTTPS_PROXY}}
+        if: ${{ secrets.HTTP_PROXY != null }}
         env:
           http_proxy: "http://testproxy.com:2031"
         run: env
