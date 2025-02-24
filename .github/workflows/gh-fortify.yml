@@ -13,7 +13,7 @@
 # documentation. If you need additional assistance, please contact Fortify support.                                                            #
 ################################################################################################################################################
 
-name: Fortify AST Scan
+name: GSA Fortify Scan
 
 # Customize trigger events based on your DevSecOps process and/or policy
 on:
@@ -25,6 +25,15 @@ on:
  # schedule:
  #   - cron: '28 23 * * 6'
   workflow_dispatch:
+  
+  workflow_call:
+   secrets:
+       FOD_USER:
+         required: true
+       FOD_TENANT:
+         required: true
+       FOD_PAT:
+         required: true
 
 jobs:
   Fortify-AST-Scan:
@@ -57,6 +66,10 @@ jobs:
         with:
           sast-scan: true
         env:
+          #### TODO: remove FOD_RELEASE and pass from caller as Github var,  FOD_RELEASE: tlegette-gsa/IWA-Java-v1.0:main ####
+          #### REMOVE: for now force to test app in GSAH #####
+          #### FOD_RELEASE: 21473
+          
           ### Required configuration when integrating with Fortify on Demand
           FOD_URL: https://fed.fortifygov.com
           FOD_TENANT: ${{secrets.FOD_TENANT}}
@@ -64,7 +77,8 @@ jobs:
           FOD_PASSWORD: ${{secrets.FOD_PAT}}
           DO_SETUP: true
           SETUP_EXTRA_OPTS: --assessment-type "Static+"
-          # DO_PACKAGE_DEBUG: true 
+                    
+          DO_PACKAGE_DEBUG: true 
           ### Optional configuration when integrating with Fortify on Demand
           # EXTRA_PACKAGE_OPTS: -oss                       # Extra 'scancentral package' options, like '-oss'' if
                                                            # Debricked SCA scan is enabled on Fortify on Demand
