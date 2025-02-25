@@ -33,5 +33,5 @@ jobs:
       FOD_USER: ${{ secrets.FOD_USER }}
       FOD_TENANT: ${{ secrets.FOD_TENANT }}
       FOD_PAT: ${{ secrets.FOD_PAT }}
-      http_proxy: ${{ secrets.HTTP_PROXY }}
+      #http_proxy: ${{ secrets.HTTP_PROXY }}
       https_proxy: ${{ secrets.HTTPS_PROXY }}
