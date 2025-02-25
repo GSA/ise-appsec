@@ -74,8 +74,7 @@ jobs:
           #### REMOVE: for now force to test app in GSAH #####
           #### FOD_RELEASE: 21473
 
-          ### Proxy settings
-          #http_proxy: ${{ secrets.HTTP_PROXY == null && '' || secrets.HTTP_PROXY }}
+          ### Proxy settings (optional)
           http_proxy: ${{secrets.HTTP_PROXY}}
           https_proxy: ${{secrets.HTTPS_PROXY}}
           
