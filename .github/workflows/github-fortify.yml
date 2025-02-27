@@ -1,0 +1,37 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+################################################################################################################################################
+# Fortify Application Security provides your team with solutions to empower DevSecOps practices, enable cloud transformation, and secure your  #
+# software supply chain. To learn more about Fortify, start a free trial or contact our sales team, visit fortify.com.                         #
+#                                                                                                                                              #
+# Use this starter workflow as a basis for integrating Fortify Application Security Testing into your GitHub workflows. This template          #
+# demonstrates the steps to package the code+dependencies, initiate a scan, and optionally import SAST vulnerabilities into GitHub Security    #
+# Code Scanning Alerts. Additional information is available in the workflow comments and the Fortify AST Action / fcli / Fortify product       #
+# documentation. If you need additional assistance, please contact Fortify support.                                                            #
+################################################################################################################################################
+
+name: GSA Fortify Scan
+
+# Customize trigger events based on your DevSecOps process and/or policy
+on:
+ # push:
+ #   branches: [ "main" ]
+ # pull_request:
+    # The branches below must be a subset of the branches above
+ #   branches: [ "main" ]
+ # schedule:
+ #   - cron: '28 23 * * 6'
+  workflow_dispatch:
+
+jobs:
+  Fortify-AST-Scan:
+    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@main
+    secrets:
+      FOD_USER: ${{ secrets.FOD_USER }}
+      FOD_TENANT: ${{ secrets.FOD_TENANT }}
+      FOD_PAT: ${{ secrets.FOD_PAT }}
+      http_proxy: ${{ secrets.HTTP_PROXY }}
+      https_proxy: ${{ secrets.HTTPS_PROXY }}
