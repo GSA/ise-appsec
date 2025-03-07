@@ -1,0 +1,63 @@
+################################################################################################################################################ 
+# Fortify lets you build secure software fast with an appsec platform that automates testing throughout the DevSecOps pipeline. Fortify static
+# dynamic, interactive, and runtime security testing is available on premises or as a service. To learn more about Fortify, start a free trial #
+# or contact our sales team, visit microfocus.com/appsecurity.                                                                                 #
+#                                                                                                                                              #
+# Use this pipeline template as a basis for integrating Fortify on Demand Static Application Security Testing(SAST) into your GitLab pipelines.#
+# This template demonstrates the steps to prepare the code+dependencies and initiate a scan. As an option, it also supports waiting for the    #
+# SAST scan to complete and optinally failing the job. Software Composition Analysis can be also be performed in conjunection with the SAST    #
+# scan if that service has been purchased. Users should review inputs and environment variables below to configure scanning for an existing    #
+# application in your Fortify on Demand tenant. Additional information is available in the comments throughout the template and the Fortify on #
+# Demand, FoD Uploader and ScanCentral Client product documentation. If you need additional assistance with configuration, feel free to create #
+# a help ticket in the Fortify on Demand portal.                                                                                               #
+################################################################################################################################################
+
+fortify-sast-fod:
+  image: fortifydocker/fortify-ci-tools:latest-jdk-17
+  variables:
+    # Update/override PACKAGE_OPTS based on the ScanCentral Client documentation for your project's included tech stack(s). Helpful hints:
+    #   ScanCentral Client will download dependencies for maven (-bt mvn) and gradle (-bt gradle).
+    #   The current fortify-ci-tools image is Linux only at this time. Msbuild integration is not currently supported.
+    #   ScanCentral has additional options that should be set for PHP and Python projects.
+    #   For other build tools (-bt none), add your build commands to download necessary dependencies and prepare according to Fortify on Demand Packaging documentation.
+    #   ScanCentral Client documentation is located at https://www.microfocus.com/documentation/fortify-software-security-center/ 
+    #PACKAGE_OPTS: "-bt mvn"
+    PACKAGE_OPTS: "-bt none"
+    
+    # Update/override the FoDUploader environment variables as needed. For more information on FoDUploader commands, see https://github.com/fod-dev/fod-uploader-java. Helpful hints:
+    #   Credentials (FOD_USERNAME, FOD_PAT, FOD_TENANT) are expected as GitLab CICD Variables in the template (masking recommended).
+    #   Static scan settings should be configured in Fortify on Demand portal (Automated Audit preference strongly recommended).
+    #   FOD_RELEASE_ID is expected as a GitLab CICD Variable.
+    #   FOD_UPLOADER_OPTS can be adjusted to wait for scan completion/pull results (-I 1) and control whether to fail the job (-apf).
+    FOD_URL: "https://fed.fortifygov.com"
+    FOD_API_URL: "https://api.fed.fortifygov.com/"
+    FOD_UPLOADER_OPTS: "-ep 2 -pp 0"
+    FOD_NOTES: "Triggered by Gitlab Pipeline IID $CI_PIPELINE_IID: $CI_PIPELINE_URL"
+
+  script:
+    # Package source code and dependencies using Fortify ScanCentral client
+    - 'scancentral package $PACKAGE_OPTS -o package.zip -targs -Dhttp.proxyHost=obproxy-test-pool.login.gov.internal -targs -Dhttp.proxyPort=3128 -sargs -Dhttp.proxyHost=obproxy-test-pool.login.gov.internal -sargs -Dhttp.proxyPort=3128'
+    # Start Fortify on Demand SAST scan
+    #- 'FoDUpload -z package.zip -aurl $FOD_API_URL -purl $FOD_URL -rid "$FOD_RELEASE" -tc "$FOD_TENANT" -uc "$FOD_USERNAME" "$FOD_PAT" $FOD_UPLOADER_OPTS -n "$FOD_NOTES" -P http://obproxy-test-pool.login.gov.internal:3128 "" "" "" ""'
+    # Generate GitLab reports
+    #- 'FortifyVulnerabilityExporter FoDToGitLabSAST --fod.baseUrl=$FOD_URL --fod.tenant="$FOD_TENANT" --fod.userName="$FOD_USERNAME" --fod.password="$FOD_PAT" --fod.release.id=$FOD_RELEASE'
+    #- 'java -Dhttp.proxyHost=obproxy-test-pool.login.gov.internal -Dhttp.proxyPort=3128 -jar /opt/Fortify/FortifyVulnerabilityExporter/FortifyVulnerabilityExporter.jar FoDToGitLabSAST --fod.baseUrl=$FOD_URL --fod.tenant="$FOD_TENANT" --fod.userName="$FOD_USERNAME" --fod.password="$FOD_PAT" --fod.release.id=$FOD_RELEASE'
+    #- 'FortifyVulnerabilityExporter FoDToGitLabSAST --fod.proxy.url="http://obproxy-test-pool.login.gov.internal:3128" --fod.baseUrl=$FOD_URL --fod.tenant="$FOD_TENANT" --fod.userName="$FOD_USERNAME" --fod.password="$FOD_PAT" --fod.release.id=$FOD_RELEASE'
+    - fcli config proxy add obproxy-test-pool.login.gov.internal:3128
+    - fcli fod session login --url $FOD_URL -t $FOD_TENANT -u $FOD_USERNAME -p $FOD_PAT
+    - fcli fod sast-scan start --rel $FOD_RELEASE -f package.zip --store fod_sast_scan
+    - fcli fod sast-scan wait-for "::fod_sast_scan::"
+    
+    
+    # Temp fix by Opentext for broken report format
+    #- fcli fod action run gitlab-sast-report --rel $FOD_RELEASE -f ./gl-fortify-sast.json
+    - fcli fod action run --on-unsigned=ignore --on-invalid-version=ignore https://raw.githubusercontent.com/fortify/fcli/2dc02fac2983a4fb35445a0b61e9bd663c289ca1/fcli-core/fcli-fod/src/main/resources/com/fortify/cli/fod/actions/zip/gitlab-sast-report.yaml --rel $FOD_RELEASE
+  
+  # Change to false to fail the entire pipeline if the scan fails and/or the result of a scan causes security policy failure (see "-apf" option in FoDUploader documentation)
+  allow_failure: true
+
+  # Report SAST vulnerabilities back to GitLab
+  artifacts:
+    reports:
+      sast: gl-fortify-sast.json
+
