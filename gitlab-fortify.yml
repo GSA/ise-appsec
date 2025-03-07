@@ -32,7 +32,7 @@ fortify-sast-fod:
     FOD_URL: "https://fed.fortifygov.com"
     FOD_API_URL: "https://api.fed.fortifygov.com/"
     FOD_UPLOADER_OPTS: "-ep 2 -pp 0"
-    FOD_NOTES: "Triggered by Gitlab Pipeline IID $CI_PIPELINE_IID: $CI_PIPELINE_URL"
+    #FOD_NOTES: "Triggered by Gitlab Pipeline IID $CI_PIPELINE_IID: $CI_PIPELINE_URL"
 
   script:
     # Package source code and dependencies using Fortify ScanCentral client
