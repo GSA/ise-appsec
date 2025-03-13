@@ -27,6 +27,12 @@ on:
   workflow_dispatch:
   
   workflow_call:
+   inputs:
+    EXTRA_OPTS:
+     type: string
+     required: false
+     default: ''
+     description: extra package options like excludes for the scanner
    secrets:
        FOD_USER:
          required: true
@@ -88,7 +94,7 @@ jobs:
                     
           DO_PACKAGE_DEBUG: true 
           ### Optional configuration when integrating with Fortify on Demand
-          # EXTRA_PACKAGE_OPTS: -oss                       # Extra 'scancentral package' options, like '-oss'' if
+          EXTRA_PACKAGE_OPTS: ${{inputs.EXTRA_OPTS}}                       # Extra 'scancentral package' options, like '-oss'' if
                                                            # Debricked SCA scan is enabled on Fortify on Demand
           # EXTRA_FOD_LOGIN_OPTS: --socket-timeout=60s     # Extra 'fcli fod session login' options
           # FOD_RELEASE: MyApp:MyRelease                   # FoD release name, default: <org>/<repo>:<branch>; may
