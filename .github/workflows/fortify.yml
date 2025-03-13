@@ -29,6 +29,8 @@ on:
 jobs:
   Fortify-AST-Scan:
     uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@main
+    with:
+      EXTRA_OPTS: '**/*.xyz'
     secrets:
       FOD_USER: ${{ secrets.FOD_USER }}
       FOD_TENANT: ${{ secrets.FOD_TENANT }}
