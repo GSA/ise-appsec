@@ -1,0 +1,72 @@
+################################################################################################################################################ 
+# Fortify lets you build secure software fast with an appsec platform that automates testing throughout the DevSecOps pipeline. Fortify static
+# dynamic, interactive, and runtime security testing is available on premises or as a service. To learn more about Fortify, start a free trial #
+# or contact our sales team, visit microfocus.com/appsecurity.                                                                                 #
+#                                                                                                                                              #
+# Use this pipeline template as a basis for integrating Fortify on Demand Static Application Security Testing(SAST) into your GitLab pipelines.#
+# This template demonstrates the steps to prepare the code+dependencies and initiate a scan. As an option, it also supports waiting for the    #
+# SAST scan to complete and optinally failing the job. Software Composition Analysis can be also be performed in conjunection with the SAST    #
+# scan if that service has been purchased. Users should review inputs and environment variables below to configure scanning for an existing    #
+# application in your Fortify on Demand tenant. Additional information is available in the comments throughout the template and the Fortify on #
+# Demand, FoD Uploader and ScanCentral Client product documentation. If you need additional assistance with configuration, feel free to create #
+# a help ticket in the Fortify on Demand portal.                                                                                               #
+################################################################################################################################################
+
+fortify-sast-fod:
+  image: fortifydocker/fortify-ci-tools:latest-jdk-17
+  variables:
+    # Update/override PACKAGE_OPTS based on the ScanCentral Client documentation for your project's included tech stack(s). Helpful hints:
+    #   ScanCentral Client will download dependencies for maven (-bt mvn) and gradle (-bt gradle).
+    #   The current fortify-ci-tools image is Linux only at this time. Msbuild integration is not currently supported.
+    #   ScanCentral has additional options that should be set for PHP and Python projects.
+    #   For other build tools (-bt none), add your build commands to download necessary dependencies and prepare according to Fortify on Demand Packaging documentation.
+    #   ScanCentral Client documentation is located at https://www.microfocus.com/documentation/fortify-software-security-center/2440/SC_SAST_Help_24.4.0/index.htm#Resources/HTMLelements/Title_Page.htm?TocPath=_____1
+    #PACKAGE_OPTS: "-bt mvn"
+    PACKAGE_OPTS: "-bt none"
+    
+    #   Credentials (FOD_USERNAME, FOD_PAT, FOD_TENANT) are expected as GitLab CICD Variables in the template (masking recommended).
+    #   Static scan settings should be configured in Fortify on Demand portal (Automated Audit preference strongly recommended).
+    FOD_URL: "https://fed.fortifygov.com"
+    FOD_API_URL: "https://api.fed.fortifygov.com/"
+    FOD_NOTES: "Triggered by Gitlab Pipeline IID $CI_PIPELINE_IID: $CI_PIPELINE_URL"
+
+  script:
+    # Package source code and dependencies using Fortify ScanCentral client
+    # ScanCentral package documenation is located at https://www.microfocus.com/documentation/fortify-software-security-center/2440/SC_SAST_Help_24.4.0/index.htm#cli/package-cmd.htm?TocPath=Fortify%2520ScanCentral%2520SAST%2520command-line%2520options%257C_____3    
+    - scancentral package $PACKAGE_OPTS -o package.zip
+
+    # Start Fortify on Demand SAST scan sequence
+    # (optional) if Proxy support is needed use the following model (replace with you settings)
+    #- fcli config proxy add <proxy host>:<proxy port>
+
+    # Create a new session using credentials from the Gitlab variables
+    - fcli fod session login --url $FOD_URL -t $FOD_TENANT -u $FOD_USERNAME -p $FOD_PAT
+    
+    # Use the commit branch for the release name
+    # Create a new release using branch name if it does not exist 
+    # Make sure FOD_APPNAME, FOD_USERNAME and FOD_PAT variables are set in Gitlab
+    - fcli fod action run setup-release --rel $FOD_APPNAME:$CI_COMMIT_BRANCH --scan-types sast --assessment-type Static+ --app-owner $FOD_USERNAME
+    
+    # To use the release id instead of branch name
+    #- fcli fod sast-scan start --rel $FOD_RELEASE -f package.zip --store fod_sast_scan
+
+    # Upload the source and start the SAST scan 
+    - fcli fod sast-scan start --rel $FOD_APPNAME:$CI_COMMIT_BRANCH -f package.zip --store fod_sast_scan
+    # To use the release id instead of branch name
+    # - fcli fod sast-scan start --rel $FOD_RELEASE -f package.zip --store fod_sast_scan
+
+    # Wait for the scan to complete
+    - fcli fod sast-scan wait-for "::fod_sast_scan::"
+    
+    # Download the results after completion
+    # Temp fix by Opentext for broken report format
+    #- fcli fod action run gitlab-sast-report --rel $FOD_RELEASE -f ./gl-fortify-sast.json
+    - fcli fod action run --on-unsigned=ignore --on-invalid-version=ignore https://raw.githubusercontent.com/fortify/fcli/2dc02fac2983a4fb35445a0b61e9bd663c289ca1/fcli-core/fcli-fod/src/main/resources/com/fortify/cli/fod/actions/zip/gitlab-sast-report.yaml --rel $FOD_APPNAME:$CI_COMMIT_BRANCH
+  
+  # Change to false to fail the entire pipeline if the scan fails and/or the result of a scan causes security policy failure (see "-apf" option in FoDUploader documentation)
+  allow_failure: true
+
+  # Report SAST vulnerabilities back to GitLab
+  artifacts:
+    reports:
+      sast: gl-fortify-sast.json
