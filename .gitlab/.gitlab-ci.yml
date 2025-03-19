@@ -23,6 +23,7 @@ fortify-sast-fod:
     #   ScanCentral Client documentation is located at https://www.microfocus.com/documentation/fortify-software-security-center/2440/SC_SAST_Help_24.4.0/index.htm#Resources/HTMLelements/Title_Page.htm?TocPath=_____1
     #PACKAGE_OPTS: "-bt mvn"
     PACKAGE_OPTS: "-bt none"
+    EXTRA_PACKAGE_OPTS: "" # can be used to exclude files/folders using ANT style (--exclude vendor/**)
     
     #   Credentials (FOD_USERNAME, FOD_PAT, FOD_TENANT) are expected as GitLab CICD Variables in the template (masking recommended).
     #   Static scan settings should be configured in Fortify on Demand portal (Automated Audit preference strongly recommended).
