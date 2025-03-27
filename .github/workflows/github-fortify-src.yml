@@ -35,12 +35,12 @@ on:
      description: extra package options like excludes for the scanner
     ASSESSMENT_TYPE:
       type: string
-      required: true
+      required: false
       default: "Static+"
       description: the type of assessment
     COPY_FROM_RELEASE:
       type: string
-      required: true
+      required: false
       default: "${{ github.event.repository }}:${{ github.event.repository.default_branch }}"
    secrets:
        FOD_CLIENT_ID:
