@@ -17,8 +17,8 @@ name: GSA Fortify Scan
 
 # Customize trigger events based on your DevSecOps process and/or policy
 on:
- # push:
- #   branches: [ "main" ]
+  push:
+    branches: [ "setup-copy-from-release" ]
  # pull_request:
     # The branches below must be a subset of the branches above
  #   branches: [ "main" ]
@@ -28,12 +28,13 @@ on:
 
 jobs:
   Fortify-AST-Scan:
-    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@main
+    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@setup-copy-from-release
     with:
-      EXTRA_OPTS: ''
+      PACKAGE_EXTRA_OPTS: ''
+      ASSESSMENT_TYPE: "Static Assessment"
+      # COPY_FROM_RELEASE: "GSA/ise-appsec:main"
     secrets:
-      FOD_USER: ${{ secrets.FOD_USER }}
-      FOD_TENANT: ${{ secrets.FOD_TENANT }}
-      FOD_PAT: ${{ secrets.FOD_PAT }}
+      FOD_CLIENT_ID: ${{ secrets.FOD_SANDBOX_MANAGE_APPS_CLIENT_ID }}
+      FOD_CLIENT_SECRET: ${{ secrets.FOD_SANDBOX_MANAGE_APPS_CLIENT_SECRET }}
       http_proxy: ${{ secrets.HTTP_PROXY }}
       https_proxy: ${{ secrets.HTTPS_PROXY }}
