@@ -63,7 +63,7 @@ jobs:
           FOD_CLIENT_ID: ${{secrets.FOD_SANDBOX_MANAGE_APPS_CLIENT_ID}}
           FOD_CLIENT_SECRET: ${{secrets.FOD_SANDBOX_MANAGE_APPS_CLIENT_SECRET}}
           DO_SETUP: true
-          SETUP_EXTRA_OPTS: --assessment-type "Static Assessment" --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}"
+          SETUP_EXTRA_OPTS: --assessment-type "Static Assessment" # --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}"
           # DO_PACKAGE_DEBUG: true 
           ### Optional configuration when integrating with Fortify on Demand
           # EXTRA_PACKAGE_OPTS: -oss                       # Extra 'scancentral package' options, like '-oss'' if
