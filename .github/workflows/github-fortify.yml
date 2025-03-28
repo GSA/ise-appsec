@@ -33,7 +33,7 @@ jobs:
       PACKAGE_EXTRA_OPTS: ''
       # New releases will be created based on an existing release. By default, this is <org>/<repo>:<default_branch>, e.g. GSA/ise-appsec:main
       # If the name of your base release is not in this form, set COPY_FROM_RELEASE to an existing FOD release (either a numeric ID, or "AppName:ReleaseName")
-      # COPY_FROM_RELEASE: "${{ github.repository }}:${{ github.event.repository.default_branch }}"
+      COPY_FROM_RELEASE: "${{ github.repository }}:${{ github.event.repository.default_branch }}"
     secrets:
       FOD_CLIENT_ID: ${{ secrets.FOD_CLIENT_ID }}
       FOD_CLIENT_SECRET: ${{ secrets.FOD_CLIENT_SECRET }}
