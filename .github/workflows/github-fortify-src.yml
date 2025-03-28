@@ -41,7 +41,7 @@ on:
     COPY_FROM_RELEASE:
       type: string
       required: false
-      default: "${{ github.repository }}:${{ github.event.repository.default_branch }}"
+      default: ""
    secrets:
        FOD_CLIENT_ID:
          required: true
@@ -96,7 +96,7 @@ jobs:
           FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
           FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
           DO_SETUP: true
-          SETUP_EXTRA_OPTS: --assessment-type "${{inputs.ASSESSMENT_TYPE}}" --copy-from "${{inputs.COPY_FROM_RELEASE}}"
+          SETUP_EXTRA_OPTS: --assessment-type "${{inputs.ASSESSMENT_TYPE}}" ${{ inputs.COPY_FROM_RELEASE != '' && format('--copy-from "{0}"', inputs.COPY_FROM_RELEASE) || '' }}
           DO_PACKAGE_DEBUG: true 
           ### Optional configuration when integrating with Fortify on Demand
           PACKAGE_EXTRA_OPTS: ${{inputs.PACKAGE_EXTRA_OPTS}}                       # Extra 'scancentral package' options, like '-oss'' if
