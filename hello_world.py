@@ -1,1 +1,1 @@
-print("First Scan smartpay-training")
+print("Hello AppSec")
