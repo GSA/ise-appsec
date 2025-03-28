@@ -28,7 +28,7 @@ on:
 
 jobs:
   Fortify-AST-Scan:
-    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@main
+    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@setup-copy-from-release
     with:
       PACKAGE_EXTRA_OPTS: ''
       # New releases will be created based on an existing release. By default, this is <org>/<repo>:<default_branch>, e.g. GSA/ise-appsec:main
