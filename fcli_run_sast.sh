@@ -16,7 +16,7 @@
 # Environment vars defined in external file:
 # . ./env.sh
 
-# Authenticate using env vars FCLI_DEFAULT_FOD_USER and FCLI_DEFAULT_FOD_PASSWORD (Personal Access Token)
+# Authenticate with API Key Client Credentials
 java -jar ~/tools/fcli.jar fod session login --client-id="${FOD_CLIENT_ID}" --client-secret="${FOD_CLIENT_SECRET}"
 
 # Package
