@@ -28,10 +28,6 @@ on:
   
   workflow_call:
    inputs:
-       APPNAME:
-         type: string
-         required: false
-         default: ${{ github.repository }}
        PACKAGE_EXTRA_OPTS:
          type: string
          required: false
@@ -47,6 +43,8 @@ on:
          required: false
          default: ""
    secrets:
+       FOD_APPNAME:
+         required: false
        FOD_CLIENT_ID:
          required: true
        FOD_CLIENT_SECRET:
