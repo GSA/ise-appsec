@@ -103,8 +103,7 @@ jobs:
           DO_PACKAGE_DEBUG: true 
           ### Optional configuration when integrating with Fortify on Demand
           PACKAGE_EXTRA_OPTS: ${{inputs.PACKAGE_EXTRA_OPTS}}                       # Extra 'scancentral package' options, like '-oss'' if
-          REL: ${{ github.head_ref || github.ref_name }}
-          FOD_RELEASE: ${{ secrets.FOD_APPNAME || github.repository }}:${{ REL }}
+          FOD_RELEASE: ${{ secrets.FOD_APPNAME || github.repository }}:${{ github.head_ref || github.ref_name }}
                                                            # Debricked SCA scan is enabled on Fortify on Demand
           # EXTRA_FOD_LOGIN_OPTS: --socket-timeout=60s     # Extra 'fcli fod session login' options
           # FOD_RELEASE: MyApp:MyRelease                   # FoD release name, default: <org>/<repo>:<branch>; may
