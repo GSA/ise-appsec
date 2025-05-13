@@ -1,0 +1,35 @@
+fortify-sast-fod3:
+    image: mcr.microsoft.com/dotnet/sdk:9.0  # Image providing the build tools
+    when: manual
+    variables: # Configuration for 'fcli action run ci'
+        #   Update/override EXTRA_PACKAGE_OPTS in the ANT style notion for excluding files/folders based on the documentation for your project's included tech stack(s). Helpful hints:
+        #   located at https://www.microfocus.com/documentation/fortify-software-security-center/2440/SC_SAST_Help_24.4.0/index.htm#cli/package-cmd.htm?TocPath=Fortify%2520ScanCentral%2520SAST%2520command-line%2520options%257C_____3
+        #EXTRA_PACKAGE_OPTS: "--exclude vendor/**" 
+
+        FOD_RELEASE: ${FOD_APPNAME}:${CI_COMMIT_BRANCH}
+        # If you need to manually set branch name to update the release results in FoD
+        #FOD_RELEASE: "${FOD_APPNAME}:<name>"
+
+        # The following variables are static in nature and should remain the same for all installations
+        SETUP_EXTRA_OPTS: --assessment-type "Static+"
+        FOD_URL: "https://fed.fortifygov.com"
+        FOD_API_URL: "https://api.fed.fortifygov.com/"
+        FOD_CLIENT_ID: ${FOD_CLIENT_ID}
+        FOD_CLIENT_SECRET: ${FOD_CLIENT_SECRET}
+        DO_RELEASE_SUMMARY: false
+        DO_SETUP: true
+
+    services:
+        - name: fortifydocker/fcli:dev_v3.x-gitlab-installer-svc-linux
+    before_script:                                 # Set env vars, show fcli install log 
+        - export FORTIFY_DIR=${CI_BUILDS_DIR}/fortify
+        - export PATH=${PATH}:${FORTIFY_DIR}
+    script: 
+        - fcli tool definitions update                                       # Running inside build tool image
+        - fcli tool sc-client install --with-jre
+        - fcli action run ci
+    # Report SAST vulnerabilities back to GitLab
+    artifacts:
+        reports:
+            sast: gl-fortify-sast.json
+
