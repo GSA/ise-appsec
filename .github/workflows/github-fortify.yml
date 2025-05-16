@@ -28,6 +28,10 @@ on:
 
 jobs:
   Fortify-AST-Scan:
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@main
     with:
       PACKAGE_EXTRA_OPTS: ''
@@ -39,5 +43,6 @@ jobs:
     secrets:
       FOD_CLIENT_ID: ${{ secrets.FOD_CLIENT_ID }}
       FOD_CLIENT_SECRET: ${{ secrets.FOD_CLIENT_SECRET }}
+      FOD_APPNAME: ${{ secrets.FOD_APPNAME }}
       http_proxy: ${{ secrets.HTTP_PROXY }}
       https_proxy: ${{ secrets.HTTPS_PROXY }}
