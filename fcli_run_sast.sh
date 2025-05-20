@@ -1,32 +1,35 @@
 #!/usr/bin/env bash
 
 # Dependencies:
-#  - JDK 17
+#  - JDK >= 17
+#  - Build tools installed (e.g. Maven or Gradle)
 #  - fcli.jar 
-#  - Maven or Gradle (this example uses Maven)
 #  - scancentral executable
 
-# Required Environment Variables:
-# bamboo_ssc_applicationName='GSA/appsec-test' # Set this to your app name
-# bamboo_release='fod_bamboo_testing' # This can be the name of the current branch
-# FCLI_DEFAULT_FOD_URL='https://fed.fortifygov.com' # Use this as-is
-# FOD_CLIENT_ID=''
-# FOD_CLIENT_SECRET=''
+# Source Environment vars defined in external file:
+# . .env
 
-# Environment vars defined in external file:
-# . ./env.sh
+# Example .env file:
+# export FCLI_DEFAULT_FOD_URL='https://fed.fortifygov.com' # Keep this as-is
+# fod_app_name='GSA/ise-appsec'                           # Set this to your app name
+# fod_release_name='test-release-1'                        # This can be the name of the branch
+# fod_client_id=                                           # your client ID
+# fod_client_secret=                                       # your client secret
+# fcli_home=/path/to/fcli                                  # directory containing fcli.jar
+# alias fcli='java -jar "${fcli_home}"/fcli.jar'           # Alias for convenience
+
 
 # Authenticate with API Key Client Credentials
-java -jar ~/tools/fcli.jar fod session login --client-id="${FOD_CLIENT_ID}" --client-secret="${FOD_CLIENT_SECRET}"
+fcli fod session login --client-id="${fod_client_id}" --client-secret="${fod_client_secret}"
 
-# Package
-scancentral package -o package.zip --build-tool mvn 
+# Package 
+scancentral package -o ../package.zip
 
 # Create the release if it does not exist
-java -jar ~/tools/fcli.jar fod action run setup-release --rel "${bamboo_ssc_applicationName}:${bamboo_release}" --scan-types sast --assessment-type "Static+"
+fcli fod action run setup-release --rel "${fod_app_name}:${fod_release_name}" --scan-types sast --assessment-type "Static+"
 
 # Scan
-java -jar ~/tools/fcli.jar fod sast-scan start --rel "${bamboo_ssc_applicationName}:${bamboo_release}" -f package.zip --store fod_sast_scan
+fcli fod sast-scan start --rel "${fod_app_name}:${fod_release_name}" -f ../package.zip --store fod_sast_scan
 
 # Log out
-java -jar ~/tools/fcli.jar fod session logout
+fcli fod session logout
