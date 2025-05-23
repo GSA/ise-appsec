@@ -28,11 +28,15 @@ on:
   
   workflow_call:
    inputs:
+    FOD_RELEASE:
+      type: string
+      required: false
+      default: ${{github.repository}}:${{github.ref_name}}
     PACKAGE_EXTRA_OPTS:
-     type: string
-     required: false
-     default: ''
-     description: extra package options like excludes for the scanner
+      type: string
+      required: false
+      default: ''
+      description: extra package options like excludes for the scanner
     ASSESSMENT_TYPE:
       type: string
       required: false
