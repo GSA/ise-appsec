@@ -32,9 +32,9 @@ jobs:
       actions: read
       contents: read
       security-events: write
-    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@main
+    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@${{ github.head_ref || github.ref_name }}
     with:
-      # FOD_RELEASE: ''
+      FOD_APPNAME: 'GSA/customer-test'
       PACKAGE_EXTRA_OPTS: ''
       # To copy existing release attributes, scan settings, and issue details when creating a new release, uncomment the COPY_FROM_RELEASE input.
       # If the name of your base release is not in the form <org>/<repo>:<default_branch> (e.g. GSA/ise-appsec:main), 
@@ -44,6 +44,5 @@ jobs:
     secrets:
       FOD_CLIENT_ID: ${{ secrets.FOD_CLIENT_ID }}
       FOD_CLIENT_SECRET: ${{ secrets.FOD_CLIENT_SECRET }}
-      # FOD_APPNAME: ${{ secrets.FOD_APPNAME }}
       http_proxy: ${{ secrets.HTTP_PROXY }}
       https_proxy: ${{ secrets.HTTPS_PROXY }}
