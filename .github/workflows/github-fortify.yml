@@ -32,7 +32,7 @@ jobs:
       actions: read
       contents: read
       security-events: write
-    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@${{ github.head_ref || github.ref_name }}
+    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@gh_fod_demo
     with:
       FOD_APPNAME: 'GSA/customer-test'
       PACKAGE_EXTRA_OPTS: ''
