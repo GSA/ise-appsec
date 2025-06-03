@@ -13,7 +13,7 @@
 # documentation. If you need additional assistance, please contact Fortify support.                                                            #
 ################################################################################################################################################
 
-name: GSA Fortify Scan
+name: GSA Fortify Scan SOURCE
 
 # Customize trigger events based on your DevSecOps process and/or policy
 on:
