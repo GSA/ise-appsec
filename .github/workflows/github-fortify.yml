@@ -36,7 +36,6 @@ jobs:
     with:
       # FOD_APPNAME: 'GSA/customer-test'
       PACKAGE_EXTRA_OPTS: ''
-      ASSESSMENT_TYPE: 'SomeFakeAssessmentType'
       # To copy existing release attributes, scan settings, and issue details when creating a new release, uncomment the COPY_FROM_RELEASE input.
       # If the name of your base release is not in the form <org>/<repo>:<default_branch> (e.g. GSA/ise-appsec:main), 
       # set COPY_FROM_RELEASE to an existing FOD release (either a numeric ID, or AppName:ReleaseName)
