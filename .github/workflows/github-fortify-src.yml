@@ -39,7 +39,7 @@ on:
       description: extra package options like excludes for the scanner
     ASSESSMENT_TYPE:
       type: string
-      required: false
+      required: true
       default: "\"Static+\""
       description: the type of assessment
     COPY_FROM_RELEASE:
