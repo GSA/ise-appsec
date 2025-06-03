@@ -35,6 +35,7 @@ jobs:
     uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@gh_fod_demo
     with:
       # FOD_APPNAME: 'GSA/customer-test'
+      FOD_RELEASE_NAME: 'gh_fod_demo5'
       PACKAGE_EXTRA_OPTS: ''
       # To copy existing release attributes, scan settings, and issue details when creating a new release, uncomment the COPY_FROM_RELEASE input.
       # If the name of your base release is not in the form <org>/<repo>:<default_branch> (e.g. GSA/ise-appsec:main), 
