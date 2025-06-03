@@ -13,7 +13,7 @@
 # documentation. If you need additional assistance, please contact Fortify support.                                                            #
 ################################################################################################################################################
 
-name: GSA Fortify ScanA
+name: GSA Fortify Scan
 
 # Customize trigger events based on your DevSecOps process and/or policy
 on:
@@ -34,7 +34,7 @@ jobs:
       security-events: write
     uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@gh_fod_demo
     with:
-      FOD_APPNAME: 'GSA/customer-test'
+      # FOD_APPNAME: 'GSA/customer-test'
       PACKAGE_EXTRA_OPTS: ''
       # To copy existing release attributes, scan settings, and issue details when creating a new release, uncomment the COPY_FROM_RELEASE input.
       # If the name of your base release is not in the form <org>/<repo>:<default_branch> (e.g. GSA/ise-appsec:main), 
