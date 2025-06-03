@@ -1,5 +1,8 @@
 fortify-sast-fod3:
-    image: mcr.microsoft.com/dotnet/sdk:9.0  # Image providing the build tools
+    #image: mcr.microsoft.com/dotnet/sdk:9.0  # Image providing the build tools
+    image: maven:3.9-eclipse-temurin-11  # Image providing the build tools
+
+
     when: manual
     variables: # Configuration for 'fcli action run ci'
         #   Update/override EXTRA_PACKAGE_OPTS in the ANT style notion for excluding files/folders based on the documentation for your project's included tech stack(s). Helpful hints:

@@ -100,6 +100,7 @@ jobs:
           DO_SETUP: true
           #SETUP_EXTRA_OPTS: --assessment-type "${{inputs.ASSESSMENT_TYPE}}" ${{ inputs.COPY_FROM_RELEASE != '' && format('--copy-from "{0}"', inputs.COPY_FROM_RELEASE) || '' }}
           SETUP_EXTRA_OPTS: --assessment-type "Static+"
+
           DO_PACKAGE_DEBUG: true 
           ### Optional configuration when integrating with Fortify on Demand
           PACKAGE_EXTRA_OPTS: ${{inputs.PACKAGE_EXTRA_OPTS}}                       # Extra 'scancentral package' options, like '-oss'' if
