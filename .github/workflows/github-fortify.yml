@@ -34,7 +34,7 @@ jobs:
       security-events: write
     uses: GSA/ise-appsec/.github/workflows/github-fortify-src2.yml@main
     with:
-      # FOD_APPNAME: 'GSA/customer-test'
+      # FOD_APP_NAME: 'GSA/customer-test'
       # FOD_RELEASE_NAME: 'my_release'
       # PACKAGE_EXTRA_OPTS: '--exclude "/node_modules/"'
       # 
