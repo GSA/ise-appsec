@@ -19,6 +19,7 @@ fortify-sast-fod3:
         FOD_API_URL: "https://api.fed.fortifygov.com/"
         FOD_CLIENT_ID: ${FOD_CLIENT_ID}
         FOD_CLIENT_SECRET: ${FOD_CLIENT_SECRET}
+        SAST_WAIT_EXTRA_OPTS: --timeout=2h
         DO_RELEASE_SUMMARY: false
         DO_SETUP: true
 
