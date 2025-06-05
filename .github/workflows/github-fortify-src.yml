@@ -13,7 +13,7 @@
 # documentation. If you need additional assistance, please contact Fortify support.                                                            #
 ################################################################################################################################################
 
-name: GSA Fortify Scan
+name: GSA Fortify Scan SOURCE
 
 # Customize trigger events based on your DevSecOps process and/or policy
 on:
@@ -28,15 +28,23 @@ on:
   
   workflow_call:
    inputs:
+    FOD_APP_NAME:
+      type: string
+      required: false
+      default: ${{github.repository}}
+    FOD_RELEASE_NAME:
+      type: string
+      required: false
+      default: ${{ github.head_ref || github.ref_name }}
     PACKAGE_EXTRA_OPTS:
-     type: string
-     required: false
-     default: ''
-     description: extra package options like excludes for the scanner
+      type: string
+      required: false
+      default: ''
+      description: extra package options like excludes for the scanner
     ASSESSMENT_TYPE:
       type: string
       required: false
-      default: "Static+"
+      default: '"Static+"'
       description: the type of assessment
     COPY_FROM_RELEASE:
       type: string
@@ -83,9 +91,6 @@ jobs:
         with:
           sast-scan: true
         env:
-          #### TODO: remove FOD_RELEASE and pass from caller as Github var,  FOD_RELEASE: tlegette-gsa/IWA-Java-v1.0:main ####
-          #### REMOVE: for now force to test app in GSAH #####
-          #### FOD_RELEASE: 21473
 
           ### Proxy settings (optional)
           http_proxy: ${{secrets.HTTP_PROXY}}
@@ -95,14 +100,12 @@ jobs:
           FOD_URL: https://fed.fortifygov.com
           FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
           FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
+          FOD_RELEASE: ${{ inputs.FOD_APP_NAME }}:${{ inputs.FOD_RELEASE_NAME }}
           DO_SETUP: true
-          SETUP_EXTRA_OPTS: --assessment-type "${{inputs.ASSESSMENT_TYPE}}" ${{ inputs.COPY_FROM_RELEASE != '' && format('--copy-from "{0}"', inputs.COPY_FROM_RELEASE) || '' }}
+          SETUP_EXTRA_OPTS: --assessment-type ${{ inputs.ASSESSMENT_TYPE }} ${{ inputs.COPY_FROM_RELEASE != '' && format('--copy-from "{0}"', inputs.COPY_FROM_RELEASE) || '' }}
           DO_PACKAGE_DEBUG: true 
           ### Optional configuration when integrating with Fortify on Demand
           PACKAGE_EXTRA_OPTS: ${{inputs.PACKAGE_EXTRA_OPTS}}                       # Extra 'scancentral package' options, like '-oss'' if
                                                            # Debricked SCA scan is enabled on Fortify on Demand
           # EXTRA_FOD_LOGIN_OPTS: --socket-timeout=60s     # Extra 'fcli fod session login' options
-          # FOD_RELEASE: MyApp:MyRelease                   # FoD release name, default: <org>/<repo>:<branch>; may
-                                                           # replace app+release name with numeric release ID
-          # DO_WAIT: true                                  # Wait for scan completion, implied if 'DO_EXPORT: true'
           DO_EXPORT: true                                # Export SAST results to GitHub code scanning dashboard
