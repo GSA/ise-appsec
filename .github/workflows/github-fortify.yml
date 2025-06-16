@@ -32,7 +32,7 @@ jobs:
       actions: read
       contents: read
       security-events: write
-    uses: GSA/ise-appsec/.github/workflows/github-fortify-src2.yml@main
+    uses: GSA/ise-appsec/.github/workflows/github-fortify-src.yml@main
     with:
       # FOD_APP_NAME: 'GSA/customer-test'
       # FOD_RELEASE_NAME: 'my_release'
