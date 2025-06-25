@@ -11,11 +11,12 @@
 
 # Example .env file:
 # export FCLI_DEFAULT_FOD_URL='https://fed.fortifygov.com' # Keep this as-is
-# fod_app_name='GSA/ise-appsec'                           # Set this to your app name
+# fod_app_name='GSA/ise-appsec'                            # Set this to your app name
 # fod_release_name='test-release-1'                        # This can be the name of the branch
 # fod_client_id=                                           # your client ID
 # fod_client_secret=                                       # your client secret
 # fcli_home=/path/to/fcli                                  # directory containing fcli.jar
+# shopt -s expand_aliases                                  # Enable aliases in non-interactive script
 # alias fcli='java -jar "${fcli_home}"/fcli.jar'           # Alias for convenience
 
 
